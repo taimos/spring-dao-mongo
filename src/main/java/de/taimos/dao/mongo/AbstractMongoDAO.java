@@ -54,7 +54,11 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	
 	@PostConstruct
 	public void init() {
-		DB db = this.mongo.getDB(System.getProperty("db.name", "semi-balance"));
+		String dbName = System.getProperty("db.name");
+		if (dbName == null) {
+			throw new RuntimeException("Missing database name");
+		}
+		DB db = this.mongo.getDB(dbName);
 		this.jongo = this.createJongo(db);
 		this.collection = this.jongo.getCollection(this.getCollectionName());
 		this.addIndexes();
