@@ -1,26 +1,18 @@
 package de.taimos.dao.mongo;
 
 /*
- * #%L
- * Spring DAO Mongo
- * %%
- * Copyright (C) 2013 Taimos GmbH
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * #%L Spring DAO Mongo %% Copyright (C) 2013 Taimos GmbH %% Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License. You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License. #L%
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -72,6 +64,12 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 		// Override to add indexes
 	}
 	
+	protected void addIndex(String field, boolean asc, boolean background) {
+		String options = (background) ? "{background:true}" : "";
+		String dir = (asc) ? "1" : "-1";
+		this.collection.ensureIndex("{" + field + ":" + dir + "}", options);
+	}
+	
 	protected abstract String getCollectionName();
 	
 	protected abstract Class<T> getEntityClass();
@@ -100,7 +98,7 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	}
 	
 	protected List<T> findByQuery(String query, Object... params) {
-		return this.findByQuery(query, null, params);
+		return this.findSortedByQuery(query, null, params);
 	}
 	
 	protected List<T> findSortedByQuery(String query, String sort, Object... params) {
@@ -109,6 +107,19 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 			find.sort(sort);
 		}
 		return this.convertIterable(find.as(this.getEntityClass()));
+	}
+	
+	protected T findFirstByQuery(String query, String sort, Object... params) {
+		Find find = this.collection.find(query, params);
+		if ((sort != null) && !sort.isEmpty()) {
+			find.sort(sort);
+		}
+		Iterable<T> as = find.limit(1).as(this.getEntityClass());
+		Iterator<T> iterator = as.iterator();
+		if (iterator.hasNext()) {
+			return iterator.next();
+		}
+		return null;
 	}
 	
 	@Override
