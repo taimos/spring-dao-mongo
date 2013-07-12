@@ -54,8 +54,8 @@ public abstract class AbstractMongoMockDAO<T extends AEntity> implements ICrudDA
 		if (object.getId() == null) {
 			object.setId(ObjectId.get().toString());
 		}
-		this.objects.put(object.getId(), object);
 		this.customSave(object);
+		this.objects.put(object.getId(), object);
 		return object;
 	}
 	
@@ -76,7 +76,7 @@ public abstract class AbstractMongoMockDAO<T extends AEntity> implements ICrudDA
 	
 	@Override
 	public void delete(String id) {
-		this.customDelete(null);
+		this.customDelete(id);
 		this.objects.remove(id);
 	}
 }
