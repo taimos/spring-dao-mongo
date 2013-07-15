@@ -46,11 +46,11 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<org.springframework.version>3.2.3.RELEASE</org.springframework.version>
-		<jackson.version>2.2.1</jackson.version>
+		<jackson.version>2.2.2</jackson.version>
 		<bson.version>2.2.0</bson.version>
 		<joda.time.version>2.2</joda.time.version>
 		<jongo.version>0.4</jongo.version>
-		<mongo.version>2.11.1</mongo.version>
+		<mongo.version>2.11.2</mongo.version>
 	</properties>
 	<prerequisites>
 		<maven>3.0.0</maven>
