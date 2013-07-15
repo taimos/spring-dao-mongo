@@ -8,7 +8,7 @@
 
 	<groupId>de.taimos</groupId>
 	<artifactId>spring-dao-mongo</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>Spring DAO Mongo</name>
 	<url>https://github.com/taimos/spring-dao-mongo</url>
 	<inceptionYear>2013</inceptionYear>
