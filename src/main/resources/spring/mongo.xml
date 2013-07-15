@@ -10,10 +10,10 @@
 	<beans profile="prod">
 		<bean id="mongoClient" class="com.mongodb.MongoClient">
 			<constructor-arg>
-				<value>${db.host:localhost}</value>
+				<value>${mongodb.host:localhost}</value>
 			</constructor-arg>
 			<constructor-arg>
-				<value>${db.port:27017}</value>
+				<value>${mongodb.port:27017}</value>
 			</constructor-arg>
 		</bean>
 	</beans>

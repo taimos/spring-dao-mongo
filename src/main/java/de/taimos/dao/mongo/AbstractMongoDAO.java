@@ -17,6 +17,15 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.bson.types.ObjectId;
+import org.joda.time.DateTime;
+import org.jongo.Find;
+import org.jongo.Jongo;
+import org.jongo.MongoCollection;
+import org.jongo.marshall.jackson.JacksonMapper;
+import org.jongo.marshall.jackson.JacksonMapper.Builder;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,15 +35,6 @@ import com.mongodb.DBObject;
 import com.mongodb.MapReduceCommand.OutputType;
 import com.mongodb.MapReduceOutput;
 import com.mongodb.MongoClient;
-
-import org.bson.types.ObjectId;
-import org.joda.time.DateTime;
-import org.jongo.Find;
-import org.jongo.Jongo;
-import org.jongo.MongoCollection;
-import org.jongo.marshall.jackson.JacksonMapper;
-import org.jongo.marshall.jackson.JacksonMapper.Builder;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import de.taimos.dao.AEntity;
 import de.taimos.dao.ICrudDAO;
@@ -54,7 +54,7 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	
 	@PostConstruct
 	public void init() {
-		String dbName = System.getProperty("db.name");
+		String dbName = System.getProperty("mongodb.name");
 		if (dbName == null) {
 			throw new RuntimeException("Missing database name");
 		}
