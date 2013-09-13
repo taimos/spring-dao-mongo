@@ -11,14 +11,13 @@ package de.taimos.dao;
  * and limitations under the License. #L%
  */
 
-import java.util.UUID;
-
+import org.bson.types.ObjectId;
 import org.jongo.marshall.jackson.oid.Id;
 
 public abstract class AEntity {
 	
 	@Id
-	protected String id = UUID.randomUUID().toString();
+	protected String id = new ObjectId().toString();
 	
 	
 	public String getId() {
