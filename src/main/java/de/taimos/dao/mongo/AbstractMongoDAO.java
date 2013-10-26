@@ -78,13 +78,13 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	
 	protected abstract Class<T> getEntityClass();
 	
-	protected <T> Iterable<T> mapReduce(String map, String reduce, final IObjectConverter<T> conv) {
+	protected <R> Iterable<R> mapReduce(String map, String reduce, final IObjectConverter<R> conv) {
 		return this.mapReduce(map, reduce, null, conv);
 	}
 	
-	protected <T> Iterable<T> mapReduce(String map, String reduce, DBObject query, final IObjectConverter<T> conv) {
+	protected <R> Iterable<R> mapReduce(String map, String reduce, DBObject query, final IObjectConverter<R> conv) {
 		MapReduceOutput mr = this.collection.getDBCollection().mapReduce(map, reduce, null, OutputType.INLINE, query);
-		return new ConverterIterable<T>(mr.results().iterator(), conv);
+		return new ConverterIterable<R>(mr.results().iterator(), conv);
 	}
 	
 	@Override
