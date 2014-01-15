@@ -17,7 +17,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 import org.jongo.Find;
 import org.jongo.Jongo;
@@ -28,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.mongodb.DB;
 import com.mongodb.DBObject;
@@ -44,9 +42,6 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	
 	@Autowired
 	private MongoClient mongo;
-	
-	@Autowired
-	private ObjectMapper mapper;
 	
 	private Jongo jongo;
 	protected MongoCollection collection;
@@ -74,7 +69,20 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 		this.collection.ensureIndex("{" + field + ":" + dir + "}", options);
 	}
 	
-	protected abstract String getCollectionName();
+	protected final void addTTLIndex(String field, int ttl) {
+		if (ttl <= 0) {
+			throw new IllegalArgumentException("TTL must be positive");
+		}
+		this.collection.ensureIndex("{" + field + ":1}", "{expireAfterSeconds: " + ttl + "}");
+	}
+	
+	/**
+	 * @return the name of the mongo collection<br/>
+	 *         defaults to the entity's simple name
+	 */
+	protected String getCollectionName() {
+		return this.getEntityClass().getSimpleName();
+	}
 	
 	protected abstract Class<T> getEntityClass();
 	
@@ -128,7 +136,7 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	
 	@Override
 	public T findById(String id) {
-		return this.collection.findOne(new ObjectId(id)).as(this.getEntityClass());
+		return this.collection.findOne("{_id:#}", id).as(this.getEntityClass());
 	}
 	
 	@Override
@@ -144,7 +152,7 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	
 	@Override
 	public void delete(String id) {
-		this.collection.remove(new ObjectId(id));
+		this.collection.remove("{_id:#}", id);
 	}
 	
 	public Jongo createJongo(DB db) {

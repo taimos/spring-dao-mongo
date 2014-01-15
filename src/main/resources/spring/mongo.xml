@@ -7,14 +7,25 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<beans profile="prod">
-		<bean id="mongoClient" class="com.mongodb.MongoClient">
-			<constructor-arg>
-				<value>${mongodb.host:localhost}</value>
-			</constructor-arg>
-			<constructor-arg>
-				<value>${mongodb.port:27017}</value>
-			</constructor-arg>
-		</bean>
-	</beans>
+	<bean id="mongoClient" class="com.mongodb.MongoClient">
+		<constructor-arg>
+			<!-- ServerAddress -->
+			<bean class="com.mongodb.ServerAddress">
+				<constructor-arg>
+					<value>${mongodb.host:localhost}</value>
+				</constructor-arg>
+				<constructor-arg>
+					<value>${mongodb.port:27017}</value>
+				</constructor-arg>
+			</bean>
+		</constructor-arg>
+		<constructor-arg>
+			<!-- Options -->
+			<bean class="de.taimos.dao.mongo.MongoClientOptionsFactory">
+				<property name="connectRetry" value="${mongodb.connectRetry:true}" />
+				<property name="socketTimeout" value="${mongodb.socketTimeout:10000}" />
+				<property name="connectTimeout" value="${mongodb.connectTimeout:10000}" />
+			</bean>
+		</constructor-arg>
+	</bean>
 </beans>
