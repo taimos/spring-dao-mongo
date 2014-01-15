@@ -17,6 +17,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 import org.jongo.Find;
 import org.jongo.Jongo;
@@ -136,7 +137,7 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	
 	@Override
 	public T findById(String id) {
-		return this.collection.findOne("{_id:#}", id).as(this.getEntityClass());
+		return this.collection.findOne(new ObjectId(id)).as(this.getEntityClass());
 	}
 	
 	@Override
@@ -152,7 +153,7 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	
 	@Override
 	public void delete(String id) {
-		this.collection.remove("{_id:#}", id);
+		this.collection.remove(new ObjectId(id));
 	}
 	
 	public Jongo createJongo(DB db) {

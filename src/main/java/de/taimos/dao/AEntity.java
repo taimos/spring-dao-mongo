@@ -17,7 +17,8 @@ import org.jongo.marshall.jackson.oid.Id;
 public abstract class AEntity {
 	
 	@Id
-	protected String id = new ObjectId().toString();
+	@org.jongo.marshall.jackson.oid.ObjectId
+	protected String id = ObjectId.get().toString();
 	
 	
 	public String getId() {

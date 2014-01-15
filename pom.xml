@@ -48,7 +48,7 @@
 		<jackson.version>2.3.1</jackson.version>
 		<bson.version>2.3.1</bson.version>
 		<joda.time.version>2.3</joda.time.version>
-		<jongo.version>0.4</jongo.version>
+		<jongo.version>1.0</jongo.version>
 		<mongo.version>2.11.3</mongo.version>
 	</properties>
 	<prerequisites>
