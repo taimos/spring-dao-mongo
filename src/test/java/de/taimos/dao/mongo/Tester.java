@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Test;
 
 import com.mongodb.MongoClient;
 
@@ -27,7 +26,7 @@ public class Tester {
 		}
 	}
 	
-	@Test
+	// @Test
 	public void testUpdate() {
 		TestObject o = new TestObject();
 		o.setName("bar");
