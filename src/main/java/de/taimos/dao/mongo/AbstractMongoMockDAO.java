@@ -31,12 +31,11 @@ import de.taimos.dao.ICrudDAO;
 
 public abstract class AbstractMongoMockDAO<T extends AEntity> implements ICrudDAO<T> {
 	
-	protected ConcurrentHashMap<String, T> objects = new ConcurrentHashMap<>();
+	protected final ConcurrentHashMap<String, T> objects = new ConcurrentHashMap<>();
 	
 	
 	@Override
-	public List<T> findList() {
-		System.out.println("Find by mock");
+	public final List<T> findList() {
 		List<T> res = new ArrayList<>();
 		for (T mp : this.objects.values()) {
 			res.add(mp);
@@ -45,12 +44,12 @@ public abstract class AbstractMongoMockDAO<T extends AEntity> implements ICrudDA
 	}
 	
 	@Override
-	public T findById(String id) {
+	public final T findById(String id) {
 		return this.objects.get(id);
 	}
 	
 	@Override
-	public T save(T object) {
+	public final T save(T object) {
 		if (object.getId() == null) {
 			object.setId(ObjectId.get().toString());
 		}
@@ -70,12 +69,12 @@ public abstract class AbstractMongoMockDAO<T extends AEntity> implements ICrudDA
 	}
 	
 	@Override
-	public void delete(T object) {
+	public final void delete(T object) {
 		this.delete(object.getId());
 	}
 	
 	@Override
-	public void delete(String id) {
+	public final void delete(String id) {
 		this.customDelete(id);
 		this.objects.remove(id);
 	}
