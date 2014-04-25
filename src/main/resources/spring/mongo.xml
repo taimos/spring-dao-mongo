@@ -22,7 +22,6 @@
 		<constructor-arg>
 			<!-- Options -->
 			<bean class="de.taimos.dao.mongo.MongoClientOptionsFactory">
-				<property name="connectRetry" value="${mongodb.connectRetry:true}" />
 				<property name="socketTimeout" value="${mongodb.socketTimeout:10000}" />
 				<property name="connectTimeout" value="${mongodb.connectTimeout:10000}" />
 			</bean>

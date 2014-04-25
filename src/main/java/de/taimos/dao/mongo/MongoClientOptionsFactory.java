@@ -15,7 +15,6 @@ import com.mongodb.MongoClientOptions.Builder;
  */
 public class MongoClientOptionsFactory implements FactoryBean<MongoClientOptions> {
 	
-	private boolean connectRetry;
 	private int socketTimeout;
 	private int connectTimeout;
 	
@@ -23,7 +22,6 @@ public class MongoClientOptionsFactory implements FactoryBean<MongoClientOptions
 	@Override
 	public MongoClientOptions getObject() throws Exception {
 		Builder builder = MongoClientOptions.builder();
-		builder.autoConnectRetry(this.connectRetry);
 		builder.socketTimeout(this.socketTimeout);
 		builder.connectTimeout(this.connectTimeout);
 		return builder.build();
@@ -37,13 +35,6 @@ public class MongoClientOptionsFactory implements FactoryBean<MongoClientOptions
 	@Override
 	public boolean isSingleton() {
 		return false;
-	}
-	
-	/**
-	 * @param connectRetry the connectRetry to set
-	 */
-	public void setConnectRetry(boolean connectRetry) {
-		this.connectRetry = connectRetry;
 	}
 	
 	/**
