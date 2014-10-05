@@ -29,11 +29,15 @@ import org.bson.types.ObjectId;
 import de.taimos.dao.AEntity;
 import de.taimos.dao.ICrudDAO;
 
+/**
+ * Use Fongo instead
+ */
+@Deprecated
 public abstract class AbstractMongoMockDAO<T extends AEntity> implements ICrudDAO<T> {
-	
+
 	protected final ConcurrentHashMap<String, T> objects = new ConcurrentHashMap<>();
-	
-	
+
+
 	@Override
 	public final List<T> findList() {
 		List<T> res = new ArrayList<>();
