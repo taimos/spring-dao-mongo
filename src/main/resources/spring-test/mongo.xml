@@ -2,7 +2,10 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
 	<bean id="fongo" class="com.github.fakemongo.Fongo">
-		<constructor-arg value="InMemoryStore"/>
+		<constructor-arg value="InMemoryStore" />
 	</bean>
 	<bean id="mongoClient" factory-bean="fongo" factory-method="getMongo" />
+	
+	<!-- Import demodata -->
+	<bean class="de.taimos.dao.mongo.MongoDBInit" />
 </beans>
