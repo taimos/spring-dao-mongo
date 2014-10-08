@@ -11,11 +11,15 @@ package de.taimos.dao;
  * and limitations under the License. #L%
  */
 
+import java.io.Serializable;
+
 import org.bson.types.ObjectId;
 import org.jongo.marshall.jackson.oid.Id;
 
-public abstract class AEntity {
+public abstract class AEntity implements Serializable {
 	
+	private static final long serialVersionUID = 6328501276339927785L;
+
 	@Id
 	@org.jongo.marshall.jackson.oid.ObjectId
 	protected String id = ObjectId.get().toString();
