@@ -9,21 +9,15 @@
 
 	<bean id="mongoClient" class="com.mongodb.MongoClient">
 		<constructor-arg>
-			<!-- ServerAddress -->
-			<bean class="com.mongodb.ServerAddress">
+			<bean class="com.mongodb.MongoClientURI">
+				<constructor-arg value="${mongodb.uri:mongodb://localhost:27017}"/>
 				<constructor-arg>
-					<value>${mongodb.host:localhost}</value>
+					<!-- Options -->
+					<bean class="de.taimos.dao.mongo.MongoClientOptionsFactory">
+						<property name="socketTimeout" value="${mongodb.socketTimeout:10000}" />
+						<property name="connectTimeout" value="${mongodb.connectTimeout:10000}" />
+					</bean>
 				</constructor-arg>
-				<constructor-arg>
-					<value>${mongodb.port:27017}</value>
-				</constructor-arg>
-			</bean>
-		</constructor-arg>
-		<constructor-arg>
-			<!-- Options -->
-			<bean class="de.taimos.dao.mongo.MongoClientOptionsFactory">
-				<property name="socketTimeout" value="${mongodb.socketTimeout:10000}" />
-				<property name="connectTimeout" value="${mongodb.connectTimeout:10000}" />
 			</bean>
 		</constructor-arg>
 	</bean>
