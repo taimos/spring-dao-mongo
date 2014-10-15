@@ -8,7 +8,6 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
@@ -26,23 +25,24 @@ import com.mongodb.util.JSON;
  *
  */
 public class MongoDBInit {
-
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(MongoDBInit.class);
 	
 	@Autowired
 	private MongoClient mongo;
-
-	@Value("${serviceName}")
-	private String serviceName;
-
-
+	
+	
 	/**
 	 * init database with demo data
 	 */
 	@PostConstruct
 	public void initDatabase() {
 		MongoDBInit.LOGGER.info("initializing MongoDB");
-		DB db = this.mongo.getDB(this.serviceName);
+		String dbName = System.getProperty("mongodb.name");
+		if (dbName == null) {
+			throw new RuntimeException("Missing database name; Set system property 'mongodb.name'");
+		}
+		DB db = this.mongo.getDB(dbName);
 		
 		try {
 			PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
@@ -73,6 +73,6 @@ public class MongoDBInit {
 		} catch (IOException e) {
 			throw new RuntimeException("Error importing objects", e);
 		}
-
+		
 	}
 }

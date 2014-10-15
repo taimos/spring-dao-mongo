@@ -96,7 +96,6 @@
 			<groupId>com.github.fakemongo</groupId>
 			<artifactId>fongo</artifactId>
 			<version>1.5.5</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

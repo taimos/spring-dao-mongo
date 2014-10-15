@@ -83,7 +83,7 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 		if (ttl <= 0) {
 			throw new IllegalArgumentException("TTL must be positive");
 		}
-
+		
 		this.collection.ensureIndex("{" + field + ":1}", "{expireAfterSeconds: " + ttl + "}");
 	}
 	
