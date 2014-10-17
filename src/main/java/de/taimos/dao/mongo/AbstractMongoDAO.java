@@ -11,6 +11,9 @@ package de.taimos.dao.mongo;
  * and limitations under the License. #L%
  */
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,9 +25,11 @@ import org.jongo.Find;
 import org.jongo.Jongo;
 import org.jongo.MongoCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StreamUtils;
 
 import com.mongodb.DB;
 import com.mongodb.DBObject;
+import com.mongodb.MapReduceCommand;
 import com.mongodb.MapReduceCommand.OutputType;
 import com.mongodb.MapReduceOutput;
 import com.mongodb.MongoClient;
@@ -94,13 +99,31 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	
 	protected abstract Class<T> getEntityClass();
 	
-	protected final <R> Iterable<R> mapReduce(String map, String reduce, final IObjectConverter<R> conv) {
-		return this.mapReduce(map, reduce, null, conv);
+	protected final <R> Iterable<R> mapReduce(String name, final MapReduceResultHandler<R> conv) {
+		return this.mapReduce(name, null, null, conv);
 	}
 	
-	protected final <R> Iterable<R> mapReduce(String map, String reduce, DBObject query, final IObjectConverter<R> conv) {
+	protected final <R> Iterable<R> mapReduce(String name, DBObject query, DBObject sort, final MapReduceResultHandler<R> conv) {
+		String map = this.getMRFunction(name, "map");
+		String reduce = this.getMRFunction(name, "reduce");
+		
+		MapReduceCommand mrc = new MapReduceCommand(this.collection.getDBCollection(), map, reduce, null, OutputType.INLINE, query);
+		mrc.setFinalize(this.getMRFunction(name, "finalize"));
+		mrc.setSort(sort);
 		MapReduceOutput mr = this.collection.getDBCollection().mapReduce(map, reduce, null, OutputType.INLINE, query);
 		return new ConverterIterable<R>(mr.results().iterator(), conv);
+	}
+	
+	private String getMRFunction(String name, String type) {
+		try {
+			InputStream stream = this.getClass().getResourceAsStream("/mapreduce/" + name + "." + type + ".js");
+			if (stream != null) {
+				return StreamUtils.copyToString(stream, Charset.defaultCharset());
+			}
+			return null;
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to read resource", e);
+		}
 	}
 	
 	@Override

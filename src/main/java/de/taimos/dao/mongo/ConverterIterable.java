@@ -10,7 +10,7 @@ package de.taimos.dao.mongo;
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,15 +22,17 @@ package de.taimos.dao.mongo;
 
 import java.util.Iterator;
 
+import org.jongo.ResultHandler;
+
 import com.mongodb.DBObject;
 
 final class ConverterIterable<T> implements Iterable<T> {
 	
 	private final Iterator<DBObject> iterator;
-	private final IObjectConverter<T> conv;
+	private final ResultHandler<T> conv;
 	
 	
-	ConverterIterable(Iterator<DBObject> iterator, IObjectConverter<T> conv) {
+	ConverterIterable(Iterator<DBObject> iterator, ResultHandler<T> conv) {
 		this.iterator = iterator;
 		this.conv = conv;
 	}
@@ -46,7 +48,7 @@ final class ConverterIterable<T> implements Iterable<T> {
 			
 			@Override
 			public T next() {
-				return ConverterIterable.this.conv.convert(ConverterIterable.this.iterator.next());
+				return ConverterIterable.this.conv.map(ConverterIterable.this.iterator.next());
 			}
 			
 			@Override
