@@ -18,17 +18,11 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.bson.types.ObjectId;
-import org.joda.time.DateTime;
 import org.jongo.Find;
 import org.jongo.Jongo;
 import org.jongo.MongoCollection;
-import org.jongo.marshall.jackson.JacksonMapper;
-import org.jongo.marshall.jackson.JacksonMapper.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.mongodb.DB;
 import com.mongodb.DBObject;
 import com.mongodb.MapReduceCommand.OutputType;
@@ -37,7 +31,6 @@ import com.mongodb.MongoClient;
 
 import de.taimos.dao.AEntity;
 import de.taimos.dao.ICrudDAO;
-import de.taimos.dao.JodaMapping;
 
 public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T> {
 	
@@ -195,12 +188,6 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	}
 	
 	protected Jongo createJongo(DB db) {
-		Builder builder = new JacksonMapper.Builder();
-		builder.enable(MapperFeature.AUTO_DETECT_GETTERS);
-		builder.addSerializer(DateTime.class, new JodaMapping.MongoDateTimeSerializer());
-		builder.addDeserializer(DateTime.class, new JodaMapping.MongoDateTimeDeserializer());
-		builder.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
-		builder.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-		return new Jongo(db, builder.build());
+		return JongoFactory.createDefault(db);
 	}
 }

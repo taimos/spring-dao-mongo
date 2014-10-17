@@ -31,12 +31,18 @@ public class MongoDBInit {
 	@Autowired
 	private MongoClient mongo;
 	
+	private boolean enabled = false;
+	
 	
 	/**
 	 * init database with demo data
 	 */
 	@PostConstruct
 	public void initDatabase() {
+		if (!this.enabled) {
+			// exit if we are disabled
+			return;
+		}
 		MongoDBInit.LOGGER.info("initializing MongoDB");
 		String dbName = System.getProperty("mongodb.name");
 		if (dbName == null) {
@@ -73,6 +79,14 @@ public class MongoDBInit {
 		} catch (IOException e) {
 			throw new RuntimeException("Error importing objects", e);
 		}
-		
 	}
+	
+	public boolean isEnabled() {
+		return this.enabled;
+	}
+	
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+	
 }
