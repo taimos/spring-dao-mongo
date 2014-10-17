@@ -10,12 +10,12 @@ public class DocumentLink<T extends AReferenceableEntity> {
 	public DocumentLink() {
 		//
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public DocumentLink(T object) {
 		this((Class<T>) object.getClass(), object.getId(), object.getLabel());
 	}
-
+	
 	public DocumentLink(Class<T> targetClass, String objectId, String label) {
 		this.targetClass = targetClass;
 		this.objectId = objectId;
@@ -44,6 +44,11 @@ public class DocumentLink<T extends AReferenceableEntity> {
 	
 	public void setLabel(String label) {
 		this.label = label;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s [%s@%s]", this.label, this.objectId, this.targetClass.getSimpleName());
 	}
 	
 }
