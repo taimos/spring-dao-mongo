@@ -60,31 +60,35 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 		this.addIndexes();
 	}
 	
+	/**
+	 * use MongoBee instead
+	 */
+	@Deprecated
 	protected void addIndexes() {
 		// Override to add indexes
 	}
 	
 	/**
+	 * use Mongobee and {@link ChangelogUtil} instead
+	 * 
 	 * @param field the field
 	 * @param asc <code>true</code> for ascending; <code>false</code> otherwise
 	 * @param background index async
 	 */
+	@Deprecated
 	protected final void addIndex(String field, boolean asc, boolean background) {
-		String options = (background) ? "{background:true}" : "{}";
-		String dir = (asc) ? "1" : "-1";
-		this.collection.ensureIndex("{" + field + ":" + dir + "}", options);
+		ChangelogUtil.addIndex(this.collection.getDBCollection(), field, asc, background);
 	}
 	
 	/**
+	 * use Mongobee and {@link ChangelogUtil} instead
+	 * 
 	 * @param field the field
 	 * @param ttl the TTL in seconds
 	 */
+	@Deprecated
 	protected final void addTTLIndex(String field, int ttl) {
-		if (ttl <= 0) {
-			throw new IllegalArgumentException("TTL must be positive");
-		}
-		
-		this.collection.ensureIndex("{" + field + ":1}", "{expireAfterSeconds: " + ttl + "}");
+		ChangelogUtil.addTTLIndex(this.collection.getDBCollection(), field, ttl);
 	}
 	
 	/**

@@ -28,6 +28,7 @@
 		<joda.time.version>2.4</joda.time.version>
 		<jongo.version>1.1</jongo.version>
 		<mongo.version>2.12.3</mongo.version>
+		<mongobee.version>0.7.1-SNAPSHOT</mongobee.version>
 	</properties>
 
 	<dependencies>
@@ -59,6 +60,11 @@
 			<version>${org.springframework.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
 			<version>${mongo.version}</version>
@@ -83,6 +89,29 @@
 				<exclusion>
 					<artifactId>jackson-annotations</artifactId>
 					<groupId>com.fasterxml.jackson.core</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.github.mongobee</groupId>
+			<artifactId>mongobee</artifactId>
+			<version>${mongobee.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mongodb</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jongo</groupId>
+					<artifactId>*</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

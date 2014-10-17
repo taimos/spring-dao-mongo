@@ -10,7 +10,7 @@
 	<bean id="mongoClient" class="com.mongodb.MongoClient">
 		<constructor-arg>
 			<bean class="com.mongodb.MongoClientURI">
-				<constructor-arg value="${mongodb.uri:mongodb://localhost:27017}"/>
+				<constructor-arg value="${mongodb.uri:mongodb://localhost:27017}" />
 				<constructor-arg>
 					<!-- Options -->
 					<bean class="de.taimos.dao.mongo.MongoClientOptionsFactory">
@@ -20,5 +20,11 @@
 				</constructor-arg>
 			</bean>
 		</constructor-arg>
+	</bean>
+	<bean id="mongobee" class="com.github.mongobee.Mongobee">
+		<constructor-arg ref="mongoClient" />
+		<property name="dbName" value="${mongodb.name}" />
+		<property name="enabled" value="${mongobee.enabled:false}" />
+		<property name="changeLogsScanPackage" value="${mongobee.basePackage}" />
 	</bean>
 </beans>

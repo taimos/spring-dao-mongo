@@ -8,4 +8,11 @@
 	
 	<!-- Import demodata -->
 	<bean class="de.taimos.dao.mongo.MongoDBInit" />
+	
+	<bean id="mongobee" class="com.github.mongobee.Mongobee">
+		<constructor-arg ref="mongoClient" />
+		<property name="dbName" value="${mongodb.name}" />
+		<property name="enabled" value="${mongobee.enabled:false}" />
+		<property name="changeLogsScanPackage" value="${mongobee.basePackage}" />
+	</bean>
 </beans>
