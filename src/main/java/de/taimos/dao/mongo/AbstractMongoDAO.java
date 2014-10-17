@@ -116,7 +116,7 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	
 	private String getMRFunction(String name, String type) {
 		try {
-			InputStream stream = this.getClass().getResourceAsStream("/mapreduce/" + name + "." + type + ".js");
+			InputStream stream = this.getClass().getResourceAsStream("/mongodb/" + name + "." + type + ".js");
 			if (stream != null) {
 				return StreamUtils.copyToString(stream, Charset.defaultCharset());
 			}
