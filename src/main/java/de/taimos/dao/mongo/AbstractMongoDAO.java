@@ -24,6 +24,7 @@ import org.bson.types.ObjectId;
 import org.jongo.Find;
 import org.jongo.Jongo;
 import org.jongo.MongoCollection;
+import org.jongo.ResultHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StreamUtils;
 
@@ -132,9 +133,9 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 		return this.convertIterable(as);
 	}
 	
-	protected final List<T> convertIterable(Iterable<T> as) {
-		List<T> objects = new ArrayList<>();
-		for (T mp : as) {
+	protected final <P> List<P> convertIterable(Iterable<P> as) {
+		List<P> objects = new ArrayList<>();
+		for (P mp : as) {
 			objects.add(mp);
 		}
 		return objects;
@@ -145,11 +146,28 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	}
 	
 	protected final List<T> findSortedByQuery(String query, String sort, Object... params) {
+		return this.findSortedByQuery(query, sort, null, this.getEntityClass(), params);
+	}
+	
+	protected final <P> List<P> findSortedByQuery(String query, String sort, String projection, Class<P> as, Object... params) {
+		Find find = createFind(query, sort, projection, params);
+		return this.convertIterable(find.as(as));
+	}
+	
+	protected final <P> List<P> findSortedByQuery(String query, String sort, String projection, ResultHandler<P> handler, Object... params) {
+		Find find = createFind(query, sort, projection, params);
+		return this.convertIterable(find.map(handler));
+	}
+
+	private Find createFind(String query, String sort, String projection, Object... params) {
 		Find find = this.collection.find(query, params);
 		if ((sort != null) && !sort.isEmpty()) {
 			find.sort(sort);
 		}
-		return this.convertIterable(find.as(this.getEntityClass()));
+		if ((projection != null) && !projection.isEmpty()) {
+			find.projection(projection);
+		}
+		return find;
 	}
 	
 	protected final T findFirstByQuery(String query, String sort, Object... params) {
