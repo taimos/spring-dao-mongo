@@ -1,6 +1,6 @@
 package de.taimos.dao.mongo.links;
 
-public class DocumentLink<T extends AReferenceableEntity> {
+public class DocumentLink<T extends AReferenceableEntity<T>> {
 	
 	private Class<T> targetClass;
 	private String objectId;

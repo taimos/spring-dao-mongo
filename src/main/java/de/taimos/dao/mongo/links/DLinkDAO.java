@@ -31,7 +31,7 @@ public class DLinkDAO implements IDLinkDAO {
 	}
 	
 	@Override
-	public <T extends AReferenceableEntity> T resolve(DocumentLink<T> link) {
+	public <T extends AReferenceableEntity<T>> T resolve(DocumentLink<T> link) {
 		MongoCollection collection = this.jongo.getCollection(link.getTargetClass().getSimpleName());
 		return collection.findOne(new ObjectId(link.getObjectId())).as(link.getTargetClass());
 	}

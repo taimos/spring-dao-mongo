@@ -9,7 +9,7 @@ import org.jongo.ResultHandler;
 
 import com.mongodb.DBObject;
 
-public class DLinkQuery<T extends AReferenceableEntity> {
+public class DLinkQuery<T extends AReferenceableEntity<T>> {
 	
 	private Class<T> targetClass;
 	
