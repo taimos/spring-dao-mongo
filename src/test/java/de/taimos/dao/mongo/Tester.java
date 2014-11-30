@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.fakemongo.Fongo;
 import com.github.mongobee.Mongobee;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.util.JSON;
@@ -56,25 +57,37 @@ public class Tester {
 		TestObject o = new TestObject();
 		o.setName("bar");
 		o.setValue(new BigDecimal("5"));
-		System.out.println(o);
+		Assert.assertEquals("bar", o.getName());
 		String id = o.getId();
 		
 		TestObject save = Tester.dao.save(o);
-		System.out.println(save);
+		Assert.assertEquals("bar", save.getName());
+		Tester.assertEquals(new BigDecimal("5"), save.getValue());
+		Assert.assertNotNull(save.getId());
+		Assert.assertNotNull(save.getDt());
 		
 		TestObject find = Tester.dao.findById(id);
 		Assert.assertNotNull(find);
-		System.out.println(find);
+		Assert.assertEquals("bar", find.getName());
+		Tester.assertEquals(new BigDecimal("5"), find.getValue());
+		Assert.assertEquals(id, find.getId());
+		Assert.assertNotNull(find.getDt());
 		
 		find.setName("blubb");
-		System.out.println(find);
 		
 		TestObject save2 = Tester.dao.save(find);
-		System.out.println(save2);
+		Assert.assertNotNull(save2);
+		Assert.assertEquals("blubb", save2.getName());
+		Tester.assertEquals(new BigDecimal("5"), save2.getValue());
+		Assert.assertEquals(id, save2.getId());
+		Assert.assertNotNull(save2.getDt());
 		
 		TestObject find3 = Tester.dao.findByName("blubb");
 		Assert.assertNotNull(find3);
-		System.out.println(find3);
+		Assert.assertEquals("blubb", find3.getName());
+		Tester.assertEquals(new BigDecimal("5"), find3.getValue());
+		Assert.assertEquals(id, find3.getId());
+		Assert.assertNotNull(find3.getDt());
 		
 		Tester.dao.delete(id);
 		
@@ -89,7 +102,7 @@ public class Tester {
 		TestObject o = new TestObject();
 		o.setName("bar");
 		o.setValue(new BigDecimal("5"));
-		System.out.println(o);
+		Assert.assertEquals("bar", o.getName());
 		
 		DBObject dbObject = this.createMapper().getMarshaller().marshall(o).toDBObject();
 		System.out.println(dbObject);
@@ -98,9 +111,9 @@ public class Tester {
 		
 		Object parse = JSON.parse(json);
 		System.out.println(parse);
-		System.out.println(parse.getClass());
-		System.out.println(((DBObject) parse).get("value"));
-		System.out.println(((DBObject) parse).get("value").getClass());
+		Assert.assertEquals(BasicDBObject.class, parse.getClass());
+		Assert.assertEquals(Double.class, ((DBObject) parse).get("value").getClass());
+		Assert.assertEquals(5.0D, (double) ((DBObject) parse).get("value"), 0);
 	}
 	
 	protected Mapper createMapper() {
@@ -111,6 +124,10 @@ public class Tester {
 		builder.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
 		builder.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 		return builder.build();
+	}
+	
+	private static void assertEquals(BigDecimal bd1, BigDecimal bd2) {
+		Assert.assertEquals(bd1.doubleValue(), bd2.doubleValue(), 0);
 	}
 	
 }

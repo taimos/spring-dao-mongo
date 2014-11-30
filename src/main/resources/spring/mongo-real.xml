@@ -10,7 +10,7 @@
 	<bean id="mongoClient" class="com.mongodb.MongoClient">
 		<constructor-arg>
 			<bean class="com.mongodb.MongoClientURI">
-				<constructor-arg value="${mongodb.uri:mongodb://localhost:27017}" />
+				<constructor-arg value="${mongodb.uri:mongodb://${mongodb.host:localhost}:${mongodb.port:27017}}" />
 				<constructor-arg>
 					<!-- Options -->
 					<bean class="de.taimos.dao.mongo.MongoClientOptionsFactory">
