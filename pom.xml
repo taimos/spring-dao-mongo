@@ -6,7 +6,7 @@
 		<version>2</version>
 	</parent>
 	<artifactId>spring-dao-mongo</artifactId>
-	<version>1.6</version>
+	<version>1.7-SNAPSHOT</version>
 	<name>Spring DAO Mongo</name>
 	<url>https://github.com/taimos/spring-dao-mongo</url>
 	<inceptionYear>2013</inceptionYear>
@@ -14,7 +14,7 @@
 		<connection>scm:git:git@github.com:taimos/spring-dao-mongo.git</connection>
 		<developerConnection>scm:git:git@github.com:taimos/spring-dao-mongo.git</developerConnection>
 		<url>scm:git:git@github.com:taimos/spring-dao-mongo.git</url>
-		<tag>v1.6</tag>
+		<tag>HEAD</tag>
 	</scm>
 	<issueManagement>
 		<system>github</system>
