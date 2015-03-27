@@ -21,15 +21,15 @@
 		<url>https://github.com/taimos/spring-dao-mongo/issues</url>
 	</issueManagement>
 	<properties>
-		<org.springframework.version>4.1.4.RELEASE</org.springframework.version>
+		<org.springframework.version>4.1.6.RELEASE</org.springframework.version>
 		<jackson.version>2.5.1</jackson.version>
 		<bson.version>2.4.0</bson.version>
 		<joda.time.version>2.7</joda.time.version>
 		<jongo.version>1.1</jongo.version>
 		<mongo.version>2.12.4</mongo.version>
 		<mongobee.version>0.9</mongobee.version>
-		<fongo.version>1.6.0</fongo.version>
-		<slf4j.version>1.7.10</slf4j.version>
+		<fongo.version>1.6.2</fongo.version>
+		<slf4j.version>1.7.12</slf4j.version>
 	</properties>
 
 	<dependencies>
