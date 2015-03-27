@@ -1,5 +1,14 @@
 package de.taimos.dao.mongo.links;
 
+/**
+ * Link to another document of a {@link AReferenceableEntity}<br/>
+ * It is stored as an object containing the target class, the objectid of the target and a label to avoid joining the document for display
+ * purpose.
+ * 
+ * @author Thorsten Hoeger
+ *
+ * @param <T> the target type
+ */
 public class DocumentLink<T extends AReferenceableEntity<T>> {
 	
 	private Class<T> targetClass;

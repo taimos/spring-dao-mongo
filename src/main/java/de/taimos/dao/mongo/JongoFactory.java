@@ -12,6 +12,14 @@ import com.mongodb.DB;
 
 import de.taimos.dao.JodaMapping;
 
+/**
+ * Copyright 2015 Hoegernet<br>
+ * <br>
+ * factory creating the JacksonMapper used by Jongo driver
+ * 
+ * @author Thorsten Hoeger
+ *
+ */
 public final class JongoFactory {
 	
 	private JongoFactory() {

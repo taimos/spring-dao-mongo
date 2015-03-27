@@ -16,15 +16,27 @@ import java.io.Serializable;
 import org.bson.types.ObjectId;
 import org.jongo.marshall.jackson.oid.Id;
 
+/**
+ * Copyright 2015 Hoegernet<br>
+ * <br>
+ * superclass to implement for Elements to be stored into the MongoDB. It provides an _id field which is pre-filled with a new
+ * {@link ObjectId}
+ * 
+ * @author Thorsten Hoeger
+ *
+ */
 public abstract class AEntity implements Serializable {
 	
 	private static final long serialVersionUID = 6328501276339927785L;
-
+	
 	@Id
 	@org.jongo.marshall.jackson.oid.ObjectId
 	protected String id = ObjectId.get().toString();
 	
 	
+	/**
+	 * @return the unique id of the element
+	 */
 	public String getId() {
 		return this.id;
 	}

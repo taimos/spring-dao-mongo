@@ -9,6 +9,13 @@ import org.jongo.ResultHandler;
 
 import com.mongodb.DBObject;
 
+/**
+ * QueryHelper to convert query result to a list of DLinks. It only queries the fields necessary to construct links.
+ * 
+ * @author Thorsten Hoeger
+ *
+ * @param <T>
+ */
 public class DLinkQuery<T extends AReferenceableEntity<T>> {
 	
 	private Class<T> targetClass;

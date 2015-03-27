@@ -20,6 +20,10 @@ import com.mongodb.util.JSON;
 /**
  * Copyright 2014 Taimos GmbH<br>
  * <br>
+ * 
+ * Initialized the database with data found in the classpath. It searches for files in the folder mongodb ending with .ndjson. The filename
+ * is used as name of the collection. The contents of this file has to be valid ND-JSON which means that it contains one JSON Object per
+ * line.
  *
  * @author Thorsten Hoeger
  *

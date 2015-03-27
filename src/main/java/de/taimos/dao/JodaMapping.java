@@ -25,6 +25,14 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
+/**
+ * Copyright 2015 Hoegernet<br>
+ * <br>
+ * (De-)Serializer for Jodatime
+ * 
+ * @author Thorsten Hoeger
+ *
+ */
 public class JodaMapping {
 	
 	public static class MongoDateTimeSerializer extends JsonSerializer<DateTime> {

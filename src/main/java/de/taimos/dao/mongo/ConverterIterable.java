@@ -26,6 +26,15 @@ import org.jongo.ResultHandler;
 
 import com.mongodb.DBObject;
 
+/**
+ * Copyright 2015 Hoegernet<br>
+ * <br>
+ * {@link Iterable} which converts the objects on-the-fly via the given {@link ResultHandler}
+ * 
+ * @author Thorsten Hoeger
+ *
+ * @param <T>
+ */
 final class ConverterIterable<T> implements Iterable<T> {
 	
 	private final Iterator<DBObject> iterator;

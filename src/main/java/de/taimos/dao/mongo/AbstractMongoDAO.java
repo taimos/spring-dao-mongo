@@ -38,6 +38,16 @@ import com.mongodb.MongoClient;
 import de.taimos.dao.AEntity;
 import de.taimos.dao.ICrudDAO;
 
+/**
+ * Copyright 2015 Hoegernet<br>
+ * <br>
+ * abstract class to derive to implement Mongo DAOs. The system property <code>mongodb.name</code> has to be set and it denotes the database
+ * used for this DAO.
+ * 
+ * @author Thorsten Hoeger
+ *
+ * @param <T>
+ */
 public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T> {
 	
 	@Autowired
@@ -98,12 +108,36 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 		return this.getEntityClass().getSimpleName();
 	}
 	
+	/**
+	 * @return the entity class of this DAO
+	 */
 	protected abstract Class<T> getEntityClass();
 	
+	/**
+	 * runs a map-reduce-job on the collection. same as {@link #mapReduce(String, null, null, MapReduceResultHandler)}
+	 * 
+	 * @param <R> the type of the result class
+	 * @param name the name of the map-reduce functions
+	 * @param conv the converter to convert the result
+	 * @return an {@link Iterable} with the result entries
+	 */
 	protected final <R> Iterable<R> mapReduce(String name, final MapReduceResultHandler<R> conv) {
 		return this.mapReduce(name, null, null, conv);
 	}
 	
+	/**
+	 * runs a map-reduce-job on the collection. The functions are read from the classpath in the folder mongodb. The systems reads them from
+	 * files called &lt;name&gt;.map.js, &lt;name&gt;.reduce.js and optionally &lt;name&gt;.finalize.js. After this the result is converted
+	 * using the given {@link MapReduceResultHandler}
+	 * 
+	 * @param <R> the type of the result class
+	 * @param name the name of the map-reduce functions
+	 * @param query the query to filter the elements used for the map-reduce
+	 * @param sort sort query to sort elements before running map-reduce
+	 * @param conv the converter to convert the result
+	 * @return an {@link Iterable} with the result entries
+	 * @throws RuntimeException if resources cannot be read
+	 */
 	protected final <R> Iterable<R> mapReduce(String name, DBObject query, DBObject sort, final MapReduceResultHandler<R> conv) {
 		String map = this.getMRFunction(name, "map");
 		String reduce = this.getMRFunction(name, "reduce");
@@ -133,6 +167,13 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 		return this.convertIterable(as);
 	}
 	
+	/**
+	 * converts the given {@link Iterable} to a {@link List}
+	 * 
+	 * @param <P> the element type
+	 * @param as the {@link Iterable}
+	 * @return the converted {@link List}
+	 */
 	protected final <P> List<P> convertIterable(Iterable<P> as) {
 		List<P> objects = new ArrayList<>();
 		for (P mp : as) {
@@ -141,24 +182,63 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 		return objects;
 	}
 	
+	/**
+	 * finds all elements matching the given query
+	 * 
+	 * @param query the query to search for
+	 * @param params the parameters to replace # symbols
+	 * @return the list of elements found
+	 */
 	protected final List<T> findByQuery(String query, Object... params) {
 		return this.findSortedByQuery(query, null, params);
 	}
 	
+	/**
+	 * finds all elements matching the given query and sorts them accordingly
+	 * 
+	 * @param query the query to search for
+	 * @param sort the sort query to apply
+	 * @param params the parameters to replace # symbols
+	 * @return the list of elements found
+	 */
 	protected final List<T> findSortedByQuery(String query, String sort, Object... params) {
 		return this.findSortedByQuery(query, sort, null, this.getEntityClass(), params);
 	}
 	
+	/**
+	 * finds all elements matching the given query and sorts them accordingly. With this method it is possible to specify a projection to
+	 * rename or filter fields in the result elements. Instead of returning {@link #getEntityClass()} objects it returns objects of type
+	 * <code>as</code>
+	 * 
+	 * @param query the query to search for
+	 * @param sort the sort query to apply
+	 * @param projection the projection of fields to use
+	 * @param as the target to convert result elements to
+	 * @param params the parameters to replace # symbols
+	 * @return the list of elements found
+	 */
 	protected final <P> List<P> findSortedByQuery(String query, String sort, String projection, Class<P> as, Object... params) {
-		Find find = createFind(query, sort, projection, params);
+		Find find = this.createFind(query, sort, projection, params);
 		return this.convertIterable(find.as(as));
 	}
 	
+	/**
+	 * finds all elements matching the given query and sorts them accordingly. With this method it is possible to specify a projection to
+	 * rename or filter fields in the result elements. Instead of returning {@link #getEntityClass()} objects it returns objects converted
+	 * by the given {@link ResultHandler}
+	 * 
+	 * @param query the query to search for
+	 * @param sort the sort query to apply
+	 * @param projection the projection of fields to use
+	 * @param handler the handler to convert result elements with
+	 * @param params the parameters to replace # symbols
+	 * @return the list of elements found
+	 */
 	protected final <P> List<P> findSortedByQuery(String query, String sort, String projection, ResultHandler<P> handler, Object... params) {
-		Find find = createFind(query, sort, projection, params);
+		Find find = this.createFind(query, sort, projection, params);
 		return this.convertIterable(find.map(handler));
 	}
-
+	
 	private Find createFind(String query, String sort, String projection, Object... params) {
 		Find find = this.collection.find(query, params);
 		if ((sort != null) && !sort.isEmpty()) {
@@ -170,6 +250,14 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 		return find;
 	}
 	
+	/**
+	 * queries with the given string, sorts the result and returns the first element. <code>null</code> is returned if no element is found.
+	 * 
+	 * @param query the query string
+	 * @param sort the sort string
+	 * @param params the parameters to replace # symbols
+	 * @return the first element found or <code>null</code> if none is found
+	 */
 	protected final T findFirstByQuery(String query, String sort, Object... params) {
 		Find find = this.collection.find(query, params);
 		if ((sort != null) && !sort.isEmpty()) {
@@ -196,11 +284,21 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 		return object;
 	}
 	
+	/**
+	 * override this to do something after the object was saved
+	 * 
+	 * @param object the saved object
+	 */
 	@SuppressWarnings("unused")
 	protected void afterSave(T object) {
 		//
 	}
 	
+	/**
+	 * override this to do something before the object was saved
+	 * 
+	 * @param object the object to be saved
+	 */
 	@SuppressWarnings("unused")
 	protected void beforeSave(T object) {
 		//
@@ -228,6 +326,12 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 		//
 	}
 	
+	/**
+	 * creates the Jongo driver instance. Override to manipulate the Jongo driver
+	 * 
+	 * @param db the database to use with the created Jongo
+	 * @return the created Jongo driver
+	 */
 	protected Jongo createJongo(DB db) {
 		return JongoFactory.createDefault(db);
 	}
