@@ -11,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import com.mongodb.util.JSON;
 
 /**
@@ -52,7 +52,7 @@ public class MongoDBInit {
 		if (dbName == null) {
 			throw new RuntimeException("Missing database name; Set system property 'mongodb.name'");
 		}
-		DB db = this.mongo.getDB(dbName);
+		MongoDatabase db = this.mongo.getDatabase(dbName);
 		
 		try {
 			PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
@@ -62,7 +62,7 @@ public class MongoDBInit {
 				String filename = res.getFilename();
 				String collection = filename.substring(0, filename.length() - 7);
 				MongoDBInit.LOGGER.info("Found collection file: " + collection);
-				DBCollection dbCollection = db.getCollection(collection);
+				MongoCollection<DBObject> dbCollection = db.getCollection(collection, DBObject.class);
 				try (Scanner scan = new Scanner(res.getInputStream())) {
 					int lines = 0;
 					while (scan.hasNextLine()) {
@@ -70,7 +70,7 @@ public class MongoDBInit {
 						Object parse = JSON.parse(json);
 						if (parse instanceof DBObject) {
 							DBObject dbObject = (DBObject) parse;
-							dbCollection.save(dbObject);
+							dbCollection.insertOne(dbObject);
 						} else {
 							MongoDBInit.LOGGER.error("Invalid object found: " + parse);
 							throw new RuntimeException("Invalid object");
