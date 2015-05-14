@@ -17,6 +17,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -122,7 +123,7 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	 * @return an {@link Iterable} with the result entries
 	 */
 	protected final <R> Iterable<R> mapReduce(String name, final MapReduceResultHandler<R> conv) {
-		return this.mapReduce(name, null, null, conv);
+		return this.mapReduce(name, null, null, null, conv);
 	}
 	
 	/**
@@ -134,11 +135,12 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	 * @param name the name of the map-reduce functions
 	 * @param query the query to filter the elements used for the map-reduce
 	 * @param sort sort query to sort elements before running map-reduce
+	 * @param scope the global scope for the JavaScript run
 	 * @param conv the converter to convert the result
 	 * @return an {@link Iterable} with the result entries
 	 * @throws RuntimeException if resources cannot be read
 	 */
-	protected final <R> Iterable<R> mapReduce(String name, DBObject query, DBObject sort, final MapReduceResultHandler<R> conv) {
+	protected final <R> Iterable<R> mapReduce(String name, DBObject query, DBObject sort, Map<String, Object> scope, final MapReduceResultHandler<R> conv) {
 		String map = this.getMRFunction(name, "map");
 		String reduce = this.getMRFunction(name, "reduce");
 		
@@ -149,6 +151,9 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 		}
 		if (sort != null) {
 			mrc.setSort(sort);
+		}
+		if (scope != null) {
+			mrc.setScope(scope);
 		}
 		MapReduceOutput mr = this.collection.getDBCollection().mapReduce(mrc);
 		return new ConverterIterable<R>(mr.results().iterator(), conv);
