@@ -1,7 +1,7 @@
 package de.taimos.dao.mongo.links;
 
 /**
- * Link to another document of a {@link AReferenceableEntity}<br/>
+ * Link to another document of a {@link AReferenceableEntity}<br>
  * It is stored as an object containing the target class, the objectid of the target and a label to avoid joining the document for display
  * purpose.
  * 

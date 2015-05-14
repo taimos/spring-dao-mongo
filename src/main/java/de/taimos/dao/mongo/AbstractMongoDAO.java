@@ -47,7 +47,7 @@ import de.taimos.dao.ICrudDAO;
  * 
  * @author Thorsten Hoeger
  *
- * @param <T>
+ * @param <T> the entity this DAO is used for
  */
 public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T> {
 	
@@ -102,7 +102,7 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	}
 	
 	/**
-	 * @return the name of the mongo collection<br/>
+	 * @return the name of the mongo collection<br>
 	 *         defaults to the entity's simple name
 	 */
 	protected String getCollectionName() {
@@ -115,7 +115,8 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	protected abstract Class<T> getEntityClass();
 	
 	/**
-	 * runs a map-reduce-job on the collection. same as {@link #mapReduce(String, null, null, MapReduceResultHandler)}
+	 * runs a map-reduce-job on the collection. same as {@link #mapReduce(String, DBObject, DBObject, Map, MapReduceResultHandler)
+	 * mapReduce(name, null, null, null, conv)}
 	 * 
 	 * @param <R> the type of the result class
 	 * @param name the name of the map-reduce functions
@@ -225,6 +226,7 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	 * @param projection the projection of fields to use
 	 * @param as the target to convert result elements to
 	 * @param params the parameters to replace # symbols
+	 * @param <P> the element type
 	 * @return the list of elements found
 	 */
 	protected final <P> List<P> findSortedByQuery(String query, String sort, String projection, Class<P> as, Object... params) {
@@ -242,6 +244,7 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	 * @param projection the projection of fields to use
 	 * @param handler the handler to convert result elements with
 	 * @param params the parameters to replace # symbols
+	 * @param <P> the element type
 	 * @return the list of elements found
 	 */
 	protected final <P> List<P> findSortedByQuery(String query, String sort, String projection, ResultHandler<P> handler, Object... params) {

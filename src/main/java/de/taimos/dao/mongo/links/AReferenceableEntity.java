@@ -9,7 +9,7 @@ import de.taimos.dao.AEntity;
  * 
  * @author Thorsten Hoeger
  *
- * @param <T>
+ * @param <T> generic link to myself
  */
 public abstract class AReferenceableEntity<T extends AReferenceableEntity<T>> extends AEntity {
 	

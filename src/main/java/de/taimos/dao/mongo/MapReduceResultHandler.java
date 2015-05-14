@@ -11,7 +11,7 @@ import com.mongodb.DBObject;
  * 
  * @author Thorsten Hoeger
  *
- * @param <T>
+ * @param <T> the type of the MR result objects
  */
 public abstract class MapReduceResultHandler<T> implements ResultHandler<T> {
 	

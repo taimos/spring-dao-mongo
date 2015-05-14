@@ -14,7 +14,7 @@ import com.mongodb.DBObject;
  * 
  * @author Thorsten Hoeger
  *
- * @param <T>
+ * @param <T> the {@link AReferenceableEntity} this link uses
  */
 public class DLinkQuery<T extends AReferenceableEntity<T>> {
 	
