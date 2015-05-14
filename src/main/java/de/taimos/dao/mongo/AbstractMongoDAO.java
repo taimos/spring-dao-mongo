@@ -143,9 +143,14 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 		String reduce = this.getMRFunction(name, "reduce");
 		
 		MapReduceCommand mrc = new MapReduceCommand(this.collection.getDBCollection(), map, reduce, null, OutputType.INLINE, query);
-		mrc.setFinalize(this.getMRFunction(name, "finalize"));
-		mrc.setSort(sort);
-		MapReduceOutput mr = this.collection.getDBCollection().mapReduce(map, reduce, null, OutputType.INLINE, query);
+		String finalizeFunction = this.getMRFunction(name, "finalize");
+		if (finalizeFunction != null) {
+			mrc.setFinalize(finalizeFunction);
+		}
+		if (sort != null) {
+			mrc.setSort(sort);
+		}
+		MapReduceOutput mr = this.collection.getDBCollection().mapReduce(mrc);
 		return new ConverterIterable<R>(mr.results().iterator(), conv);
 	}
 	
