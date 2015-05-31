@@ -10,7 +10,7 @@ package de.taimos.dao.mongo.links;
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,7 +22,7 @@ package de.taimos.dao.mongo.links;
 
 /**
  * Link to another document of a {@link AReferenceableEntity}<br>
- * It is stored as an object containing the target class, the objectid of the target and a label to avoid joining the document for display
+ * It is stored as an object containing the target class, the objectId of the target and a label to avoid joining the document for display
  * purpose.
  * 
  * @author Thorsten Hoeger
@@ -78,6 +78,45 @@ public class DocumentLink<T extends AReferenceableEntity<T>> {
 	@Override
 	public String toString() {
 		return String.format("%s [%s@%s]", this.label, this.objectId, this.targetClass.getSimpleName());
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = (prime * result) + ((this.objectId == null) ? 0 : this.objectId.hashCode());
+		result = (prime * result) + ((this.targetClass == null) ? 0 : this.targetClass.hashCode());
+		return result;
+	}
+	
+	@Override
+	@SuppressWarnings("rawtypes")
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof DocumentLink)) {
+			return false;
+		}
+		DocumentLink other = (DocumentLink) obj;
+		if (this.objectId == null) {
+			if (other.objectId != null) {
+				return false;
+			}
+		} else if (!this.objectId.equals(other.objectId)) {
+			return false;
+		}
+		if (this.targetClass == null) {
+			if (other.targetClass != null) {
+				return false;
+			}
+		} else if (!this.targetClass.equals(other.targetClass)) {
+			return false;
+		}
+		return true;
 	}
 	
 }

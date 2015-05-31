@@ -10,7 +10,7 @@ package de.taimos.dao.mongo;
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,6 +23,7 @@ package de.taimos.dao.mongo;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 
+import org.bson.Document;
 import org.joda.time.DateTime;
 import org.jongo.Mapper;
 import org.jongo.marshall.jackson.JacksonMapper;
@@ -38,7 +39,9 @@ import com.github.fakemongo.Fongo;
 import com.github.mongobee.Mongobee;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
+import com.mongodb.client.ListIndexesIterable;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.util.JSON;
 
 import de.taimos.dao.JodaMapping;
@@ -50,7 +53,7 @@ public class Tester {
 	public static final TestDAO dao = new TestDAO();
 	
 	// public static final Mongo mongo = new MongoClient("localhost", 27017));
-	public static final Mongo mongo = new Fongo("InMemory").getMongo();
+	public static final MongoClient mongo = new Fongo("InMemory").getMongo();
 	
 	
 	@BeforeClass
@@ -114,7 +117,12 @@ public class Tester {
 		TestObject find2 = Tester.dao.findById(id);
 		Assert.assertNull(find2);
 		
-		System.out.println(Tester.mongo.getDB(Tester.dbName).getCollection("TestObject").getIndexInfo());
+		ListIndexesIterable<Document> listIndexes = Tester.mongo.getDatabase(Tester.dbName).getCollection("TestObject").listIndexes();
+		MongoCursor<Document> iterator = listIndexes.iterator();
+		while (iterator.hasNext()) {
+			Document index = iterator.next();
+			System.out.println(index.toJson());
+		}
 	}
 	
 	@Test

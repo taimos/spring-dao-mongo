@@ -14,7 +14,8 @@ package de.taimos.dao;
 import java.io.Serializable;
 
 import org.bson.types.ObjectId;
-import org.jongo.marshall.jackson.oid.Id;
+import org.jongo.marshall.jackson.oid.MongoId;
+import org.jongo.marshall.jackson.oid.MongoObjectId;
 
 /**
  * Copyright 2015 Hoegernet<br>
@@ -29,8 +30,8 @@ public abstract class AEntity implements Serializable {
 	
 	private static final long serialVersionUID = 6328501276339927785L;
 	
-	@Id
-	@org.jongo.marshall.jackson.oid.ObjectId
+	@MongoId
+	@MongoObjectId
 	protected String id = ObjectId.get().toString();
 	
 	
