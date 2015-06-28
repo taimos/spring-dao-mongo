@@ -46,7 +46,7 @@ import de.taimos.dao.ICrudDAO;
  * used for this DAO.
  * 
  * @author Thorsten Hoeger
- *
+ * 		
  * @param <T> the entity this DAO is used for
  */
 public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T> {
@@ -67,38 +67,6 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 		DB db = this.mongo.getDB(dbName);
 		this.jongo = this.createJongo(db);
 		this.collection = this.jongo.getCollection(this.getCollectionName());
-		this.addIndexes();
-	}
-	
-	/**
-	 * use MongoBee instead
-	 */
-	@Deprecated
-	protected void addIndexes() {
-		// Override to add indexes
-	}
-	
-	/**
-	 * use Mongobee and {@link ChangelogUtil} instead
-	 * 
-	 * @param field the field
-	 * @param asc <code>true</code> for ascending; <code>false</code> otherwise
-	 * @param background index async
-	 */
-	@Deprecated
-	protected final void addIndex(String field, boolean asc, boolean background) {
-		ChangelogUtil.addIndex(this.collection.getDBCollection(), field, asc, background);
-	}
-	
-	/**
-	 * use Mongobee and {@link ChangelogUtil} instead
-	 * 
-	 * @param field the field
-	 * @param ttl the TTL in seconds
-	 */
-	@Deprecated
-	protected final void addTTLIndex(String field, int ttl) {
-		ChangelogUtil.addTTLIndex(this.collection.getDBCollection(), field, ttl);
 	}
 	
 	/**
@@ -181,7 +149,9 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	/**
 	 * converts the given {@link Iterable} to a {@link List}
 	 * 
-	 * @param <P> the element type
+	 * @param
+	 * 			<P>
+	 *            the element type
 	 * @param as the {@link Iterable}
 	 * @return the converted {@link List}
 	 */
@@ -226,7 +196,9 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	 * @param projection the projection of fields to use
 	 * @param as the target to convert result elements to
 	 * @param params the parameters to replace # symbols
-	 * @param <P> the element type
+	 * @param
+	 * 			<P>
+	 *            the element type
 	 * @return the list of elements found
 	 */
 	protected final <P> List<P> findSortedByQuery(String query, String sort, String projection, Class<P> as, Object... params) {
@@ -244,7 +216,9 @@ public abstract class AbstractMongoDAO<T extends AEntity> implements ICrudDAO<T>
 	 * @param projection the projection of fields to use
 	 * @param handler the handler to convert result elements with
 	 * @param params the parameters to replace # symbols
-	 * @param <P> the element type
+	 * @param
+	 * 			<P>
+	 *            the element type
 	 * @return the list of elements found
 	 */
 	protected final <P> List<P> findSortedByQuery(String query, String sort, String projection, ResultHandler<P> handler, Object... params) {
