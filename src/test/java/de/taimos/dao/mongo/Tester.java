@@ -120,8 +120,8 @@ public class Tester {
 		ListIndexesIterable<Document> listIndexes = Tester.mongo.getDatabase(Tester.dbName).getCollection("TestObject").listIndexes();
 		MongoCursor<Document> iterator = listIndexes.iterator();
 		while (iterator.hasNext()) {
-			Document index = iterator.next();
-			System.out.println(index.toJson());
+			Object index = iterator.next();
+			System.out.println(index.toString());
 		}
 	}
 	
