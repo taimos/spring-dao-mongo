@@ -1,6 +1,4 @@
-package de.taimos.dao.mongo.links;
-
-import java.util.List;
+package de.taimos.dao.mongo;
 
 /*
  * #%L
@@ -22,13 +20,15 @@ import java.util.List;
  * #L%
  */
 
-/**
- * DAO to generically resolve DLinks
- */
-public interface IDLinkDAO {
+public class LinkDAO extends AbstractMongoDAO<LinkObject> {
 	
-	<T extends AReferenceableEntity<T>> T resolve(DocumentLink<T> link);
+	@Override
+	protected Class<LinkObject> getEntityClass() {
+		return LinkObject.class;
+	}
 	
-	<T extends AReferenceableEntity<T>> List<T> resolve(List<DocumentLink<T>> links, Class<T> targetClass);
+	public LinkObject findByName(String name) {
+		return this.findFirstByQuery("{name:#}", null, name);
+	}
 	
 }
