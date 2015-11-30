@@ -1,5 +1,9 @@
 package de.taimos.dao.mongo.links;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 /*
  * #%L
  * Spring DAO Mongo
@@ -10,7 +14,7 @@ package de.taimos.dao.mongo.links;
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -54,6 +58,24 @@ public class DLinkDAO implements IDLinkDAO {
 	public <T extends AReferenceableEntity<T>> T resolve(DocumentLink<T> link) {
 		MongoCollection collection = this.jongo.getCollection(link.getTargetClass().getSimpleName());
 		return collection.findOne(new ObjectId(link.getObjectId())).as(link.getTargetClass());
+	}
+	
+	@Override
+	public <T extends AReferenceableEntity<T>> List<T> resolve(List<DocumentLink<T>> links, Class<T> targetClass) {
+		MongoCollection collection = this.jongo.getCollection(targetClass.getSimpleName());
+		List<ObjectId> ids = new ArrayList<>();
+		for (DocumentLink<T> link : links) {
+			if (!link.getTargetClass().equals(targetClass)) {
+				throw new IllegalArgumentException("Invalid link in collection");
+			}
+			ids.add(new ObjectId(link.getObjectId()));
+		}
+		Iterator<T> it = collection.find("{\"_id\" : {\"$in\" : #}}", ids).as(targetClass).iterator();
+		List<T> resolved = new ArrayList<>();
+		while (it.hasNext()) {
+			resolved.add(it.next());
+		}
+		return resolved;
 	}
 	
 }

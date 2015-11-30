@@ -1,25 +1,5 @@
 package de.taimos.dao.mongo;
 
-/*
- * #%L
- * Spring DAO Mongo
- * %%
- * Copyright (C) 2013 - 2015 Taimos GmbH
- * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
-
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 
@@ -35,38 +15,31 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.github.fakemongo.Fongo;
 import com.github.mongobee.Mongobee;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
 import com.mongodb.client.ListIndexesIterable;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.util.JSON;
 
 import de.taimos.dao.JodaMapping;
 
-public class Tester {
+public class Tester extends ABaseTest {
 	
-	private static final String dbName = "spring-dao-mongo";
-	
-	public static final TestDAO dao = new TestDAO();
-	
-	// public static final Mongo mongo = new MongoClient("localhost", 27017));
-	public static final MongoClient mongo = new Fongo("InMemory").getMongo();
+	private static final TestDAO dao = new TestDAO();
 	
 	
 	@BeforeClass
 	public static void init() {
 		try {
-			System.setProperty("mongodb.name", Tester.dbName);
+			System.setProperty("mongodb.name", ABaseTest.dbName);
 			Field mongoField = AbstractMongoDAO.class.getDeclaredField("mongo");
 			mongoField.setAccessible(true);
-			mongoField.set(Tester.dao, Tester.mongo);
+			mongoField.set(Tester.dao, ABaseTest.mongo);
 			
-			Mongobee bee = new Mongobee(Tester.mongo);
+			Mongobee bee = new Mongobee(ABaseTest.mongo);
 			bee.setChangeLogsScanPackage("de.taimos.dao.mongo.changelog");
-			bee.setDbName(Tester.dbName);
+			bee.setDbName(ABaseTest.dbName);
 			bee.setEnabled(true);
 			bee.execute();
 			Tester.dao.init();
@@ -85,14 +58,14 @@ public class Tester {
 		
 		TestObject save = Tester.dao.save(o);
 		Assert.assertEquals("bar", save.getName());
-		Tester.assertEquals(new BigDecimal("5"), save.getValue());
+		ABaseTest.assertEquals(new BigDecimal("5"), save.getValue());
 		Assert.assertNotNull(save.getId());
 		Assert.assertNotNull(save.getDt());
 		
 		TestObject find = Tester.dao.findById(id);
 		Assert.assertNotNull(find);
 		Assert.assertEquals("bar", find.getName());
-		Tester.assertEquals(new BigDecimal("5"), find.getValue());
+		ABaseTest.assertEquals(new BigDecimal("5"), find.getValue());
 		Assert.assertEquals(id, find.getId());
 		Assert.assertNotNull(find.getDt());
 		
@@ -101,14 +74,14 @@ public class Tester {
 		TestObject save2 = Tester.dao.save(find);
 		Assert.assertNotNull(save2);
 		Assert.assertEquals("blubb", save2.getName());
-		Tester.assertEquals(new BigDecimal("5"), save2.getValue());
+		ABaseTest.assertEquals(new BigDecimal("5"), save2.getValue());
 		Assert.assertEquals(id, save2.getId());
 		Assert.assertNotNull(save2.getDt());
 		
 		TestObject find3 = Tester.dao.findByName("blubb");
 		Assert.assertNotNull(find3);
 		Assert.assertEquals("blubb", find3.getName());
-		Tester.assertEquals(new BigDecimal("5"), find3.getValue());
+		ABaseTest.assertEquals(new BigDecimal("5"), find3.getValue());
 		Assert.assertEquals(id, find3.getId());
 		Assert.assertNotNull(find3.getDt());
 		
@@ -117,7 +90,7 @@ public class Tester {
 		TestObject find2 = Tester.dao.findById(id);
 		Assert.assertNull(find2);
 		
-		ListIndexesIterable<Document> listIndexes = Tester.mongo.getDatabase(Tester.dbName).getCollection("TestObject").listIndexes();
+		ListIndexesIterable<Document> listIndexes = ABaseTest.mongo.getDatabase(ABaseTest.dbName).getCollection("TestObject").listIndexes();
 		MongoCursor<Document> iterator = listIndexes.iterator();
 		while (iterator.hasNext()) {
 			Object index = iterator.next();
@@ -152,10 +125,6 @@ public class Tester {
 		builder.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
 		builder.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 		return builder.build();
-	}
-	
-	private static void assertEquals(BigDecimal bd1, BigDecimal bd2) {
-		Assert.assertEquals(bd1.doubleValue(), bd2.doubleValue(), 0);
 	}
 	
 }
